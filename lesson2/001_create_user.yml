@@ -1,0 +1,16 @@
+---
+- name: Create user from enctypted valut file.
+  hosts: nodes
+  vars_files:
+    - files/vault
+  tasks: 
+  - name: Performing action
+    user: 
+      name: "{{ item.key }}"
+      state: present
+      update_password: on_create
+      comment: "{{ item.key }}@example.com"
+      home: "/home/{{ item.key }}"
+      password: "{{ item.value.password }}"
+    with_dict: "{{ vault }}"
+...
