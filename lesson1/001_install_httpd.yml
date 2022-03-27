@@ -1,0 +1,12 @@
+---
+- hosts: nodes
+  tasks:  
+  - name: Install httpd
+    yum: pkg=httpd state=latest
+  - name: Enable httpd and check it
+    service: name=httpd enabled=yes state=started
+  - name: Create index.html to nodes
+    copy: dest=/var/www/html/index.html content="<html>\n<body>\n<h2>Welcome to my web server</h2>\n</body>\n</html>\n" owner=apache group=apache mode=0644
+  - name: Open port 80 for httpd
+    firewalld: port=80/tcp immediate=yes state=enabled
+...
