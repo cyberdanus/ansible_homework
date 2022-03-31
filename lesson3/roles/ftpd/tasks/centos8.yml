@@ -1,0 +1,48 @@
+---
+# tasks file for ftpd
+- name: Install vsftpd
+  yum: 
+    pkg: "{{ ftp_service }}" 
+    state: latest
+
+- name: Enable & start vsftpd
+  service: 
+    name: "{{ ftp_service }}" 
+    enabled: yes 
+    state: started
+
+- name: Create pub directory
+  file:
+    path: /var/ftp/pub
+    state: directory
+    mode: '0755'
+
+- name: Create upload directory
+  file:
+    path: /var/ftp/pub/upload
+    state: directory
+    owner: ftp
+    mode: '0755'
+
+- name: Copy config to vsftpd
+  template:
+    src: vsftpd.conf.j2
+    dest: /etc/vsftpd/vsftpd.conf
+  notify: Restart vsftpd
+
+- name: Open firewall ports
+  firewalld: 
+    port: 20-21/tcp
+    immediate: yes
+    state: enabled
+    
+- name: Set SELinux Booleans ftpd_anon_write to on
+  shell: 
+    cmd: setsebool -P ftpd_anon_write=1
+  failed_when: false
+  
+- name: Set public_content_rw_t context to upload folder
+  shell: 
+    cmd: chcon -t public_content_rw_t /var/ftp/pub/upload/
+  failed_when: false
+  

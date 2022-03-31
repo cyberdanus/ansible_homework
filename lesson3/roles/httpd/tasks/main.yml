@@ -1,0 +1,5 @@
+---
+# tasks file for httpd
+- name: Run on CentOS 8
+  import_tasks: centos8.yml
+  when: ansible_facts['distribution'] == 'CentOS' and ansible_facts['distribution_major_version'] == '8'

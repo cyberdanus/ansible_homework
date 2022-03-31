@@ -1,0 +1,8 @@
+---
+# defaults file for httpd
+http_service: httpd
+http_port: 80
+protocol: tcp
+index_dest: /var/www/html/index.html
+conf_dest: /etc/httpd/conf/httpd.conf
+cconf_dest: /etc/httpd/conf.d/custom.conf

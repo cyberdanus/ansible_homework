@@ -1,0 +1,12 @@
+---
+# handlers file for httpd
+- name: Restart httpd service
+  service:
+    name: "{{ http_service }}"
+    state: restarted
+
+- name: Open firewall port
+  firewalld:
+    port: "{{ http_port }}/{{ protocol }}"
+    immediate: yes
+    state: enabled

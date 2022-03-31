@@ -1,0 +1,39 @@
+---
+# tasks for httpd
+- name: Install httpd
+  yum: 
+    pkg: "{{ http_service }}" 
+    state: latest
+
+- name: Disable Default port in config
+  lineinfile:
+    state: present
+    dest: "{{ conf_dest }}"
+    backrefs: yes
+    regexp: '^Listen '
+    line: '#Listen 80'
+
+- name: Config new httpd port
+  template:
+    src: custom.conf.j2
+    dest: "{{ cconf_dest }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Open firewall port
+
+- name: Create index.html
+  copy: 
+    dest: "{{ index_dest }}" 
+    content: "<html>\n<body>\n<h2>Welcome to my web server</h2>\n</body>\n</html>\n" 
+    owner: apache 
+    group: apache 
+    mode: "0644"
+
+- name: Enable and start httpd
+  service: 
+    name="{{ http_service }}" 
+    enabled=yes 
+    state=started
+  notify: Restart httpd service
+...
